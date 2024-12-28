@@ -40,7 +40,9 @@ void (async () => {
         }, region)
     }
     // ждём загрузки после измененния региона 
-    await setTimeout(2000)
+    await setTimeout(5000)
+     // проверяет отрисовалась ли нижняя часть страницы
+    await page.waitForSelector('#__next > div.FeatureAppLayoutBase_layout__0HSBo.FeatureAppLayoutBase_hideBannerMobile__97CUm.FeatureAppLayoutBase_hideBannerTablet__dCMoJ.FeatureAppLayoutBase_hideBannerDesktop__gPdf1 > footer')
     //  собирает необходимые данные
     const data = await page.evaluate(() => {
         const priceOld = (document.querySelector('#__next > div.FeatureAppLayoutBase_layout__0HSBo.FeatureAppLayoutBase_hideBannerMobile__97CUm.FeatureAppLayoutBase_hideBannerTablet__dCMoJ.FeatureAppLayoutBase_hideBannerDesktop__gPdf1 > main > div:nth-child(3) > div > div.ProductPage_informationBlock__vDYCH > div.ProductPage_desktopBuy__cyRrC > div > div > div > div.PriceInfo_root__GX9Xp > div > span.Price_price__QzA8L.Price_size_XS__ESEhJ.Price_role_old__r1uT1').innerText).split(' ')[0];
@@ -52,7 +54,7 @@ void (async () => {
     // создаёт строку из собранных даных для записи в тхт файл
     const dataString = Object.entries(data).map(([key, value]) => `${key}=${value}\n`).join('')
 
-    const dir = `./${url.split('/')[url.split('/').length - 1]}`;
+    const dir = `./${url.split('/')[url.split('/').length - 1].slice(0, 250)}`;
     // проверяем есть ли папка если нет то создаём папку
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
@@ -78,9 +80,6 @@ void (async () => {
     })
     // выставляет необходимую высату страницы браузера 
     await page.setViewport({ width, height: contentConteinerOffsetHeight });
-    // проверяет отрисовалась ли нижняя часть страницы
-    await page.waitForSelector('#__next > div.FeatureAppLayoutBase_layout__0HSBo.FeatureAppLayoutBase_hideBannerMobile__97CUm.FeatureAppLayoutBase_hideBannerTablet__dCMoJ.FeatureAppLayoutBase_hideBannerDesktop__gPdf1 > footer > div.UiFooterBottomBase_footerBottom__fF9wh > div > img.UiFooterBottomBase_logo__wEbJo')
-    await setTimeout(1000)
     // делает полноразмерный скриншот страницы
     await page.screenshot({ fullPage: true, omitBackground: true, path: `${dir}/screenshot.jpg` })
     // закрывает браузер
