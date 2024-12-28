@@ -1,0 +1,4 @@
+priceOld=163
+price=122
+rating=4.8
+reviewCount=970
